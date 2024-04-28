@@ -4,6 +4,8 @@ const db = require('./db');
 const app = express();
 const clientes = require('./model/Cliente');
 const productos = require('./model/Producto');
+const insumos = require('./model/insumo');
+const proveedores = require('./model/Proveedor');
 
 app.set('view engine', 'ejs');
 
@@ -20,6 +22,13 @@ app.use(productosRoutes)
 const OrdenRoutes = require('./routes/ordenCompras');
 app.use(OrdenRoutes)
 
+const ProveedorRoutes = require('./routes/proveedores');
+app.use(ProveedorRoutes)
+
+
+const InsumoRoutes = require('./routes/insumos');
+app.use(InsumoRoutes)
+
 // Ruta para obtener clientes y productos
 app.get('/obtenerClientesYProductos', async (req, res) => {
     try {
@@ -31,6 +40,16 @@ app.get('/obtenerClientesYProductos', async (req, res) => {
         res.json({ clientes: clientesData, productos: productosData });
     } catch (error) {
         console.error('Error al obtener clientes y productos:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+app.get('/obtenerProveedores', async (req, res) => {
+    try {
+        const proveedoresData = await proveedores.find({}, '_id nombrecia'); 
+        res.json({ proveedores: proveedoresData });
+    } catch (error) {
+        console.error('Error al obtener proveedores:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
